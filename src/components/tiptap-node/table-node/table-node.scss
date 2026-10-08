@@ -1,0 +1,110 @@
+.tiptap.ProseMirror {
+  table {
+    border-collapse: collapse;
+    // table-layout is controlled inline by applyTableStyles:
+    // auto for imported tables, fixed for tables with colwidth
+    max-width: 100%;
+    margin: 1em 0;
+    overflow: hidden;
+
+    td,
+    th {
+      min-width: 1px;
+      border: 1px solid var(--tt-gray-light-a-300);
+      padding: 2px 4px;
+      vertical-align: top;
+      box-sizing: border-box;
+      position: relative;
+      overflow-wrap: break-word;
+
+      // Remove browser default margins on block elements inside cells
+      // (p has margin: 1em 0 = 16px by default, making rows too tall)
+      p, ul, ol, div, h1, h2, h3, h4, h5, h6 {
+        margin: 0 !important;
+      }
+
+      // When a row has been resized (--row-h is set), constrain children so the
+      // cell actually shrinks. overflow/height on td itself is ignored by browsers,
+      // but max-height + overflow on block children (p, ul, etc.) works.
+      &[style*="--row-h"] > * {
+        max-height: var(--row-h);
+        overflow: hidden;
+      }
+    }
+
+    // New tables start with zero padding (user resizes as needed)
+    &.compact-table td,
+    &.compact-table th {
+      padding: 0 3px;
+    }
+
+    th {
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .selectedCell::after {
+      z-index: 2;
+      position: absolute;
+      content: "";
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(59, 130, 246, 0.15);
+      pointer-events: none;
+    }
+
+    .column-resize-handle {
+      position: absolute;
+      right: -2px;
+      top: 0;
+      bottom: -2px;
+      width: 4px;
+      background-color: var(--tt-blue-500, #3b82f6);
+      pointer-events: none;
+    }
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+    margin: 1em 0;
+  }
+
+  &.resize-cursor {
+    cursor: col-resize;
+  }
+
+  &.row-resize-cursor {
+    cursor: row-resize;
+  }
+
+  .row-resize-handle {
+    background-color: var(--tt-blue-500, #3b82f6);
+  }
+
+  table td.row-resize-active,
+  table th.row-resize-active {
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 4px;
+      background-color: var(--tt-blue-500, #3b82f6);
+      pointer-events: none;
+      z-index: 10;
+    }
+  }
+
+  .dark & {
+    table {
+      td,
+      th {
+        border-color: var(--tt-gray-dark-a-300);
+      }
+
+    }
+  }
+}
